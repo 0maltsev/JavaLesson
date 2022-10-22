@@ -1,8 +1,9 @@
-package homework_2;
+package homework_2.vehicles;
 
-import java.util.Objects;
+import homework_2.vehicles.Vehicle;
 
-public class Car {
+public class DefaultVehicle implements Vehicle {
+
     private final long carId;
     private final String brand;
     private final String modelName;
@@ -10,7 +11,14 @@ public class Car {
     private final int power;
     private final int ownerId;
 
-    public Car(long carId, String brand, String modelName, int maxVelocity, int power, int ownerId) {
+    public DefaultVehicle(
+            long carId,
+            String brand,
+            String modelName,
+            int maxVelocity,
+            int power,
+            int ownerId
+    ) {
         this.carId = carId;
         this.brand = brand;
         this.modelName = modelName;
@@ -20,37 +28,27 @@ public class Car {
     }
 
     @Override
-    public boolean equals(Object object) {
-        if (this == object) return true;
-        if (object == null || getClass() != object.getClass()) return false;
-        Car car = (Car) object;
-        return carId == car.carId;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(carId);
-    }
-
     public long getId() {
         return carId;
     }
 
+    @Override
     public String getBrand() {
         return brand;
     }
 
+    @Override
     public long getPower() {
         return power;
     }
 
+    @Override
     public long getMaxVelocity() {
         return maxVelocity;
     }
 
+    @Override
     public int getOwnerId() {
         return ownerId;
     }
 }
-
-

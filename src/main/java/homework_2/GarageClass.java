@@ -2,21 +2,25 @@ package homework_2;
 
 import homework_2.utility.ComparePowerUtility;
 import homework_2.utility.CompareVelocityUtility;
+import homework_2.utility.vehicleUpgrader;
+import homework_2.vehicles.Car;
+import homework_2.vehicles.DefaultVehicle;
+
 import static java.util.stream.Collectors.toList;
 
 import java.util.*;
-import java.util.stream.Collectors;
+import java.util.function.Predicate;
 
-public class GarageClass implements Garage{
-    private final HashMap<Long, Car> carIdMap;
+public class GarageClass<T extends DefaultVehicle> implements Garage<T>{
+    private final HashMap<Long, T> carIdMap;
     private final HashMap<Long, Owner> ownerIdMap;
 
-    private final HashMap<String, HashSet<Car>> carBrandMap;
-    private final HashMap<Owner, HashSet<Car>> carOwnerMap;
+    private final HashMap<String, HashSet<T>> carBrandMap;
+    private final HashMap<Owner, HashSet<T>> carOwnerMap;
     private final HashMap<String, HashSet<Owner>> brandOwnerMap;
 
-    private final TreeSet<Car> velocitySort;
-    private final TreeSet<Car> powerSort;
+    private final TreeSet<T> velocitySort;
+    private final TreeSet<T> powerSort;
 
     public GarageClass() {
         carIdMap = new HashMap<>();
@@ -26,8 +30,8 @@ public class GarageClass implements Garage{
         carOwnerMap = new HashMap<>();
         brandOwnerMap = new HashMap<>();
 
-        velocitySort = new TreeSet<Car>(new CompareVelocityUtility());
-        powerSort = new TreeSet<Car>(new ComparePowerUtility());
+        velocitySort = new TreeSet<T>((Comparator<? super T>) new CompareVelocityUtility());
+        powerSort = new TreeSet<T>((Comparator<? super T>) new ComparePowerUtility());
     }
 
     @Override
@@ -36,23 +40,23 @@ public class GarageClass implements Garage{
     }
 
     @Override
-    public Collection<Car> topThreeCarsByMaxVelocity() {
+    public Collection<T> topThreeCarsByMaxVelocity() {
         return velocitySort.stream().limit(3).collect(toList());
     }
 
     @Override
-    public Collection<Car> allCarsOfBrand(String brand) {
+    public Collection<T> allCarsOfBrand(String brand) {
         return carBrandMap.get(brand);
     }
 
     @Override
-    public Collection<Car> carsWithPowerMoreThan(int power) {
-        Car сar = new Car(-1, "", "", 0, power + 1, -1);
-        return powerSort.headSet(сar);
+    public Collection<T> carsWithPowerMoreThan(int power) {
+        Collection<T> сar = (Collection<T>) new DefaultVehicle(-1, "", "", 0, power + 1, -1);
+        return powerSort.headSet((T) сar);
     }
 
     @Override
-    public Collection<Car> allCarsOfOwner(Owner owner) {
+    public Collection<T> allCarsOfOwner(Owner owner) {
         return carOwnerMap.get(owner);
     }
 
@@ -62,10 +66,10 @@ public class GarageClass implements Garage{
         float ageSum = 0.f;
 
 
-        HashSet<Car> carsOfBrand = carBrandMap.get(brand);
+        HashSet<T> carsOfBrand = carBrandMap.get(brand);
 
         HashSet<Owner> ownersOfBrand = new HashSet<>();
-        for (Car car : carsOfBrand) {
+        for (T car : carsOfBrand) {
             ownersOfBrand.add(ownerIdMap.get(car.getId()));
         }
 
@@ -91,25 +95,46 @@ public class GarageClass implements Garage{
         return Math.round(meanAmount);
     }
 
+    @Override
+    public T removeCar(Object carObj) {
+        return null;
+    }
+
+    @Override
+    public Collection<T> removeCars(List<? extends T> cars) {
+        return cars.stream().map(this::removeCar).toList();
+    }
+
+    @Override
+    public boolean addCar(DefaultVehicle car, Owner owner) {
+        return false;
+    }
+
+    @Override
+    public List<T> filterCars(Predicate<? super T> predicate) {
+        return carIdMap.values().stream().filter(predicate).toList();
+    }
+
+    @Override
+    public List<Object> upgradeCars(vehicleUpgrader upgrader) {
+        return carIdMap.values().stream().map(upgrader::upgrade).toList();
+    }
 
     @Override
     public Car removeCar(long carId) {
-        Car car = carIdMap.get(carId);
-        carIdMap.remove(carId);
-
-        carBrandMap.get(car.getBrand()).remove(car);
-        carOwnerMap.get(ownerIdMap.get(car.getOwnerId())).remove(car);
-
-        powerSort.remove(car);
-        velocitySort.remove(car);
-
-        return car;
+        return null;
     }
+
+    @Override
+    public boolean addCars(List cars, List owner) {
+        return false;
+    }
+
 
 
     @Override
     public void addCar(Car car, Owner owner) {
-        carIdMap.put(car.getId(), car);
+        carIdMap.put(car.getId(), (T) car);
         ownerIdMap.put(car.getId(), owner);
 
 
@@ -117,11 +142,11 @@ public class GarageClass implements Garage{
 
         carBrandMap.computeIfAbsent(car.getBrand(), k -> new HashSet<>());
 
-        carBrandMap.get(car.getBrand()).add(car);
-        carOwnerMap.get(owner).add(car);
+        carBrandMap.get(car.getBrand()).add((T) car);
+        carOwnerMap.get(owner).add((T) car);
 
-        velocitySort.add(car);
-        powerSort.add(car);
+        velocitySort.add((T) car);
+        powerSort.add((T) car);
     }
 
 

@@ -1,6 +1,6 @@
 package homework_2.utility;
 
-import homework_2.Car;
+import homework_2.vehicles.Car;
 
 import java.util.Comparator;
 

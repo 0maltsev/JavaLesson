@@ -1,22 +1,28 @@
 package homework_2;
 
-import java.util.Collection;
+import homework_2.utility.vehicleUpgrader;
+import homework_2.vehicles.Car;
+import homework_2.vehicles.DefaultVehicle;
 
-public interface Garage {
+import java.util.Collection;
+import java.util.List;
+import java.util.function.Predicate;
+
+public interface Garage <T extends DefaultVehicle>{
 
     Collection<Owner> allCarsUniqueOwners();
 
 
-    Collection<Car> topThreeCarsByMaxVelocity();
+    Collection<T> topThreeCarsByMaxVelocity();
 
 
-    Collection<Car> allCarsOfBrand(String brand);
+    Collection<T> allCarsOfBrand(String brand);
 
 
-    Collection<Car> carsWithPowerMoreThan(int power);
+    Collection<T> carsWithPowerMoreThan(int power);
 
 
-    Collection<Car> allCarsOfOwner(Owner owner);
+    Collection<T> allCarsOfOwner(Owner owner);
 
 
     int meanOwnersAgeOfCarBrand(String brand);
@@ -24,7 +30,19 @@ public interface Garage {
 
     long meanCarNumberForEachOwner();
 
+    T removeCar(Object car);
 
+    Collection<T> removeCars(List<? extends T> cars);
+
+
+
+    boolean addCar(T car, Owner owner);
+
+    boolean addCars(List<? extends T> cars, List<Owner> owner);
+
+    List<T> filterCars(Predicate<? super T> predicate);
+
+    List<Object> upgradeCars(vehicleUpgrader upgrader);
 
 
     Car removeCar(long carId);
