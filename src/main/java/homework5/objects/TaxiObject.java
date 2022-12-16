@@ -49,7 +49,7 @@ public class TaxiObject implements Taxi , Comparable<TaxiObject> {
     @Override
     public void joinThread() throws InterruptedException {
         if (isInUse.get()) {
-            throw new RuntimeException("Already joined!");
+            throw new RuntimeException();
         }
         isInUse.set(true);
         taxiThread.join();
